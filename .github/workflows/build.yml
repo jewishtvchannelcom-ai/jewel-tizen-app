@@ -15,12 +15,12 @@ jobs:
 
     - name: Install Tizen Studio
       run: |
-        sudo apt-get update
+        sudo apt-get update -y
         sudo apt-get install -y openjdk-11-jdk unzip wget
         wget -q https://download.tizen.org/sdk/Installer/tizen-studio_6.1/web-cli_Tizen_Studio_6.1_ubuntu-64.bin
         chmod +x web-cli_Tizen_Studio_6.1_ubuntu-64.bin
         ./web-cli_Tizen_Studio_6.1_ubuntu-64.bin --accept-license --no-java-check -- /home/runner/tizen-studio
-        /home/runner/tizen-studio/package-manager/package-manager-cli.bin install TV-Extension-9.0 --accept-license
+        /home/runner/tizen-studio/package-manager/package-manager-cli.bin install TV-samsung-9.0 --accept-license
 
     - name: Build and Package WGT
       run: |
