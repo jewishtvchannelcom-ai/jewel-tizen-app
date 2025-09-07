@@ -1,4 +1,4 @@
-name: Diagnostic - Find Tizen Studio Path
+name: Diagnostic - Find Tizen Executable
 
 on:
   workflow_dispatch:
@@ -19,6 +19,6 @@ jobs:
         chmod +x web-cli_Tizen_Studio_6.1_ubuntu-64.bin
         ./web-cli_Tizen_Studio_6.1_ubuntu-64.bin --accept-license --no-java-check -- /home/runner/tizen-studio
         
-    - name: List all files to find installation path
+    - name: Find Tizen Package Manager
       run: |
-        ls -R /home/runner
+        find /home/runner -name "package-manager-cli.bin"
