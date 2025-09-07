@@ -22,15 +22,17 @@ jobs:
       run: |
         wget -q https://download.tizen.org/sdk/Installer/tizen-studio_6.1/web-cli_Tizen_Studio_6.1_ubuntu-64.bin
         chmod +x web-cli_Tizen_Studio_6.1_ubuntu-64.bin
-        ./web-cli_Tizen_Studio_6.1_ubuntu-64.bin --accept-license --no-java-check -- /home/runner/tizen-studio
+        ./web-cli_Tizen_Studio_6.1_ubuntu-64.bin --accept-license --no-java-check -- /home/runner/tizen-studio-install
         
     - name: Install Tizen TV SDK
       run: |
-        /home/runner/tizen-studio/package-manager/package-manager-cli.bin install TV-samsung-9.0 --accept-license
+        TIZEN_PM=$(find /home/runner/tizen-studio-install -name "package-manager-cli.bin" | head -n 1)
+        $TIZEN_PM install TV-samsung-9.0 --accept-license
 
     - name: Build and Package WGT
       run: |
-        export PATH="$PATH:/home/runner/tizen-studio/tools/ide/bin:/home/runner/tizen-studio/tools"
+        TIZEN_CLI_DIR=$(find /home/runner/tizen-studio-install -name "tizen" | xargs dirname)
+        export PATH="$PATH:$TIZEN_CLI_DIR"
         tizen build-web -- "JewelTVAppTizen"
         tizen package -t wgt -o "JewelTVAppTizen/build" -- "JewelTVAppTizen"
 
