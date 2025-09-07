@@ -1,0 +1,27 @@
+name: Build Tizen WGT
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs_build:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Build WGT package
+      uses: 1024pix/tizen-studio-action@v1
+      with:
+        command: package
+        path: JewelTVAppTizen
+        package-type: wgt
+
+    - name: Upload WGT artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: tizen-wgt-package
+        path: JewelTVAppTizen/*.wgt
