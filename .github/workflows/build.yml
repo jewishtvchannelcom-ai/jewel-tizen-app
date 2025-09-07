@@ -13,13 +13,19 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Install Tizen Studio
+    - name: Install Dependencies
       run: |
         sudo apt-get update -y
-        sudo apt-get install -y openjdk-11-jdk unzip wget
+        sudo apt-get install -y libncurses6 zip
+        
+    - name: Install Tizen Studio
+      run: |
         wget -q https://download.tizen.org/sdk/Installer/tizen-studio_6.1/web-cli_Tizen_Studio_6.1_ubuntu-64.bin
         chmod +x web-cli_Tizen_Studio_6.1_ubuntu-64.bin
         ./web-cli_Tizen_Studio_6.1_ubuntu-64.bin --accept-license --no-java-check -- /home/runner/tizen-studio
+        
+    - name: Install Tizen TV SDK
+      run: |
         /home/runner/tizen-studio/package-manager/package-manager-cli.bin install TV-samsung-9.0 --accept-license
 
     - name: Build and Package WGT
