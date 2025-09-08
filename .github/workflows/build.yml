@@ -1,4 +1,4 @@
-name: Find Tizen Studio Path (Advanced)
+name: Capture Installer Log
 
 on:
   workflow_dispatch:
@@ -8,18 +8,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Install Tizen Studio
+    - name: Install Tizen Studio and capture log
       run: |
         wget -q https://download.tizen.org/sdk/Installer/tizen-studio_6.1/web-cli_Tizen_Studio_6.1_ubuntu-64.bin
         chmod +x web-cli_Tizen_Studio_6.1_ubuntu-64.bin
-        ./web-cli_Tizen_Studio_6.1_ubuntu-64.bin --accept-license --no-java-check -- /home/runner/tizen-studio
+        ./web-cli_Tizen_Studio_6.1_ubuntu-64.bin --accept-license --no-java-check -- /home/runner/tizen-studio &> /home/runner/installer_log.txt
         
-    - name: Find Tizen Package Manager across entire filesystem
-      run: |
-        find / -name "package-manager-cli.bin" 2>/dev/null > /home/runner/tizen_path.txt || echo "File not found" > /home/runner/tizen_path.txt
-
-    - name: Upload path as artifact
+    - name: Upload installer log
       uses: actions/upload-artifact@v4
       with:
-        name: tizen-path-info
-        path: /home/runner/tizen_path.txt
+        name: tizen-installer-log
+        path: /home/runner/installer_log.txt
