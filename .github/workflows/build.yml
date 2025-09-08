@@ -1,4 +1,4 @@
-name: Find Tizen Studio Path
+name: Find Tizen Studio Path (Advanced)
 
 on:
   workflow_dispatch:
@@ -14,9 +14,9 @@ jobs:
         chmod +x web-cli_Tizen_Studio_6.1_ubuntu-64.bin
         ./web-cli_Tizen_Studio_6.1_ubuntu-64.bin --accept-license --no-java-check -- /home/runner/tizen-studio
         
-    - name: Find and save the Tizen executable path
+    - name: Find Tizen Package Manager across entire filesystem
       run: |
-        find /home/runner -name "package-manager-cli.bin" > /home/runner/tizen_path.txt
+        find / -name "package-manager-cli.bin" 2>/dev/null > /home/runner/tizen_path.txt || echo "File not found" > /home/runner/tizen_path.txt
 
     - name: Upload path as artifact
       uses: actions/upload-artifact@v4
