@@ -1,13 +1,18 @@
-name: Diagnostic - Find Tizen Executable
+name: Build Tizen WGT
 
 on:
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  diagnose:
+  build:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
     - name: Install Dependencies
       run: |
         sudo apt-get update -y
@@ -19,6 +24,18 @@ jobs:
         chmod +x web-cli_Tizen_Studio_6.1_ubuntu-64.bin
         ./web-cli_Tizen_Studio_6.1_ubuntu-64.bin --accept-license --no-java-check -- /home/runner/tizen-studio
         
-    - name: Find Tizen Package Manager
+    - name: Install Tizen TV SDK
       run: |
-        find /home/runner -name "package-manager-cli.bin"
+        /home/runner/tizen-studio/package-manager/package-manager-cli.bin install TV-samsung-9.0 --accept-license
+
+    - name: Build and Package WGT
+      run: |
+        export PATH="$PATH:/home/runner/tizen-studio/tools/ide/bin:/home/runner/tizen-studio/tools"
+        tizen build-web -- "JewelTVAppTizen"
+        tizen package -t wgt -o "JewelTVAppTizen/build" -- "JewelTVAppTizen"
+
+    - name: Upload WGT artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: tizen-wgt-package
+        path: JewelTVAppTizen/build/*.wgt
