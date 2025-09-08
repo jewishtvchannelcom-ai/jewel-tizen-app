@@ -1,41 +1,25 @@
-name: Build Tizen WGT
+name: Find Tizen Studio Path
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  build:
+  diagnose:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Install Dependencies
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y libncurses6 zip
-        
     - name: Install Tizen Studio
       run: |
         wget -q https://download.tizen.org/sdk/Installer/tizen-studio_6.1/web-cli_Tizen_Studio_6.1_ubuntu-64.bin
         chmod +x web-cli_Tizen_Studio_6.1_ubuntu-64.bin
         ./web-cli_Tizen_Studio_6.1_ubuntu-64.bin --accept-license --no-java-check -- /home/runner/tizen-studio
         
-    - name: Install Tizen TV SDK
+    - name: Find and save the Tizen executable path
       run: |
-        /home/runner/tizen-studio/package-manager/package-manager-cli.bin install TV-samsung-9.0 --accept-license
+        find /home/runner -name "package-manager-cli.bin" > /home/runner/tizen_path.txt
 
-    - name: Build and Package WGT
-      run: |
-        export PATH="$PATH:/home/runner/tizen-studio/tools/ide/bin:/home/runner/tizen-studio/tools"
-        tizen build-web -- "JewelTVAppTizen"
-        tizen package -t wgt -o "JewelTVAppTizen/build" -- "JewelTVAppTizen"
-
-    - name: Upload WGT artifact
+    - name: Upload path as artifact
       uses: actions/upload-artifact@v4
       with:
-        name: tizen-wgt-package
-        path: JewelTVAppTizen/build/*.wgt
+        name: tizen-path-info
+        path: /home/runner/tizen_path.txt
